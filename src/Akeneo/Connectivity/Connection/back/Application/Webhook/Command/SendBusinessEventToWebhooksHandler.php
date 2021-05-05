@@ -21,7 +21,10 @@ use Akeneo\Connectivity\Connection\Domain\Webhook\Persistence\Repository\EventsA
 use Akeneo\Platform\Component\EventQueue\BulkEvent;
 use Akeneo\Platform\Component\EventQueue\BulkEventInterface;
 use Akeneo\Platform\Component\EventQueue\EventInterface;
+use Akeneo\Query\GetUserByIdQuery;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Stamp\HandledStamp;
 
 /**
  * @author    Thomas Galvaing <thomas.galvaing@akeneo.com>
@@ -44,6 +47,7 @@ final class SendBusinessEventToWebhooksHandler
     private CacheClearerInterface $cacheClearer;
     private string $pimSource;
     private ?\Closure $getTimeCallable;
+    private MessageBusInterface $queryBus;
 
     public function __construct(
         SelectActiveWebhooksQuery $selectActiveWebhooksQuery,
@@ -58,6 +62,7 @@ final class SendBusinessEventToWebhooksHandler
         EventsApiDebugRepository $eventsApiDebugRepository,
         EventsApiRequestCountRepository $eventsApiRequestRepository,
         CacheClearerInterface $cacheClearer,
+        MessageBusInterface $queryBus,
         string $pimSource,
         ?callable $getTimeCallable = null
     ) {
@@ -75,6 +80,7 @@ final class SendBusinessEventToWebhooksHandler
         $this->cacheClearer = $cacheClearer;
         $this->pimSource = $pimSource;
         $this->getTimeCallable = null !== $getTimeCallable ? \Closure::fromCallable($getTimeCallable) : null;
+        $this->queryBus = $queryBus;
     }
 
     public function handle(SendBusinessEventToWebhooksCommand $command): void
@@ -94,7 +100,11 @@ final class SendBusinessEventToWebhooksHandler
             $versions = [];
 
             foreach ($webhooks as $webhook) {
-                $user = $this->webhookUserAuthenticator->authenticate($webhook->userId());
+                $this->webhookUserAuthenticator->authenticate($webhook->userId());
+
+                //TODO NEXT STEP : service ?
+                $response = $this->queryBus->dispatch(new GetUserByIdQuery($webhook->userId()));
+                $user = $response->last(HandledStamp::class)->getResult();
 
                 $filteredPimEventBulk = $this->filterConnectionOwnEvents($webhook, $user->getUsername(), $pimEventBulk);
                 if (null === $filteredPimEventBulk) {

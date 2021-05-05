@@ -108,6 +108,7 @@ services:
             - '@akeneo_connectivity.connection.persistence.repository.events_api_debug'
             - '@akeneo_connectivity.connection.persistence.repository.events_api_request_count'
             - '@akeneo_connectivity.connection.webhook.cache_clearer'
+            - '@query.bus'
             - '%env(AKENEO_PIM_URL)%'
 
     akeneo_connectivity.connection.application.webhook.handler.update_connection_webhook:
