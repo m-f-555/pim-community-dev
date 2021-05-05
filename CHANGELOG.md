@@ -53,6 +53,13 @@
 - PIM-9798: Refresh completeness on product grid after family import
 - PIM-9800: Fix event not sent issue when creating products or product models
 - PIM-9809: Fix missing filters in the product grid for few UI locales with Firefox
+- PIM-9807: Trigger warning when importing date as text attribute via XLSX files
+- PIM-9801: Fix jobs that are still stuck in STARTED and STOPPING and create a command to avoid this again
+- PIM-9771: Fix the image preview when exporting a product as pdf
+- PIM-9829: Fix product grid crash when using a family filter on a deleted family
+- PIM-9820: Fix the Error 500 on the product grid with the date filter
+- PIM-9833: Fix null pointer exception on Product::getVariationLevel (CE contribution)
+- PIM-9826: Display the system attribute filters with the UI locale on the user account settings
 
 ## New features
 
@@ -64,6 +71,7 @@
 # Technical Improvements
 
 - PIM-9648: Mitigate DDoS risk on API auth endpoint by rejecting too large content
+- PIM-9697: Exported files streamer
 
 ## Classes
 

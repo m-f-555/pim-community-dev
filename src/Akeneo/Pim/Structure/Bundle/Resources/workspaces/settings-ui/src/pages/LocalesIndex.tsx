@@ -1,6 +1,6 @@
 import React, {FC, useEffect} from 'react';
-import {PageContent, PageHeader} from '@akeneo-pim-community/shared';
-import {PimView, useRoute, useTranslate} from '@akeneo-pim-community/legacy-bridge';
+import {PimView} from '@akeneo-pim-community/legacy-bridge';
+import {PageContent, PageHeader, useRoute, useTranslate} from '@akeneo-pim-community/shared';
 import {LocalesDataGrid} from '../components';
 import {useLocalesIndexState} from '../hooks';
 import styled from 'styled-components';
@@ -23,7 +23,7 @@ const HelperContent = styled.span`
 const LocalesIndex: FC = () => {
   const translate = useTranslate();
   const {locales, load, isPending} = useLocalesIndexState();
-  const settingsHomePageRoute = useRoute('pim_enrich_attribute_index');
+  const settingsHomePageRoute = useRoute('pim_settings_index');
   const settingsChannelPageRoute = useRoute('pim_enrich_channel_index');
 
   useEffect(() => {
